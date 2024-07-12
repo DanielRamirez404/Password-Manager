@@ -8,9 +8,8 @@ def getDefaultLoginInfo() -> dict:
 def getLoginInfo() -> dict:
     filepath = r"../users/login.json"
     try:
-        file = open(filepath, 'r')
-        loginInfo  = json.load(file)
-        file.close()
+        with open(filepath, 'r') as file:
+            loginInfo = json.load(file)
     except IOError:
         print(r"There's no login file")
         loginInfo = getDefaultLoginInfo()
