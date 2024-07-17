@@ -1,24 +1,24 @@
 import json
 
-loginInfoPath = r"../users/login.json"
+class LoginInfo:
+    _path = r"../users/login.json"
+    _info = _getDefaultLoginInfo()
 
-def getDefaultLoginInfo() -> dict:
-    return { 'users': [], 'encrypted-passwords': [] }
+    def _getDefaultLoginInfo() -> dict:
+        return { 'users': [], 'encrypted-passwords': [] }
 
-def getLoginInfo() -> dict:
-    global loginInfoPath 
-    try:
-        with open(loginInfoPath, 'r') as file:
-            return json.load(file)
-    except IOError:
-        return getDefaultLoginInfo()
+    def load() -> None:
+        try:
+            with open(_path, 'r') as file:
+                 _info = json.load(file)
+        except IOError:
+            _info = _getDefaultLoginInfo()
 
-def saveLoginInfo(loginDictionary: dict) -> None:
-    global loginInfoPath
-    try:
-        with open(loginInfoPath, 'w') as file:
-            json.dump(loginDictionary, file, indent = 4)
-    except FileNotFoundError:
-        with open(loginInfoPath, 'x') as file:
-            pass
-        saveLoginInfo(loginDictionary)
+    def save() -> None:
+        try:
+            with open(_path, 'w') as file:
+                json.dump(_info, file, indent = 4)
+        except FileNotFoundError:
+            file = open(_path, 'x')
+            file.close()
+            save()
