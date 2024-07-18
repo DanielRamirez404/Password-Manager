@@ -1,9 +1,13 @@
 import json
+import hashlib
 
 class LoginInfo:
 
     def _getDefaultLoginInfo() -> dict:
         return { 'users': [], 'encrypted-passwords': [] }
+
+    def _generateHash(password: str) -> str:
+        return hashlib.sha256(password.encode()).hexdigest()
 
     _path = r"../users/login.json"
     _info = _getDefaultLoginInfo()
@@ -24,7 +28,7 @@ class LoginInfo:
         except FileNotFoundError:
             file = open(cls._path, 'x')
             file.close()
-            save()
+            cls.save()
 
     @classmethod
     def isEmpty(cls) -> bool:
@@ -33,17 +37,17 @@ class LoginInfo:
     @classmethod
     def createUser(cls, username: str, password: str) -> None:
         cls._info['users'].append(username)
-        cls._info['encrypted-passwords'].append(password)   #this has to be encrypted before appending
-        save()
+        cls._info['encrypted-passwords'].append(cls._generateHash(password))
+        cls.save()
 
     @classmethod
     def deleteUser(cls, username: str) -> None:
         index = cls._info['users'].index(username)
         cls._info['users'].remove(index)
         cls._info['encrypted-passwords'].remove(index)
-        save()
+        cls.save()
 
     @classmethod
     def validateUser(cls, username: str, password: str) -> bool:
         index = cls._info['users'].index(username)
-        return cls._info['encrypted_passwords'][index] == password  #the password has to be encrypted before using
+        return cls._info['encrypted_passwords'][index] == cls._generateHash(password)
