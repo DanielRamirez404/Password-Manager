@@ -1,28 +1,24 @@
-import accounts
+from accounts import LoginInfo
 import sqlite3
 import tkinter
-
-def createUser(loginInfo: dict, user: str, password: str) -> None:
-    loginInfo['users'].append(user)
-    loginInfo['encrypted-passwords'].append(password)   #this has to be encrypted before appending
 
 def loadDatabase():
     pass
     #return sqlite3.connect("database.db")
 
 def __main__() -> int:
-    loginInfo = accounts.getLoginInfo()
+    LoginInfo.load()
 
-    if len(loginInfo['users']) == 0:
+    if LoginInfo.isEmpty():
         #create user example
-        createUser(loginInfo, 'coolUser777', 'password123')
+        LoginInfo.createUser('coolUser777', 'password123')
     else:
         pass
         #login
         #connection = loadDatabase()       
 
-    accounts.saveLoginInfo(loginInfo)
-   
+    LoginInfo.save()
+
     return 0
 
 __main__()

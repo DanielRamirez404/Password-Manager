@@ -1,24 +1,49 @@
 import json
 
 class LoginInfo:
-    _path = r"../users/login.json"
-    _info = _getDefaultLoginInfo()
 
     def _getDefaultLoginInfo() -> dict:
         return { 'users': [], 'encrypted-passwords': [] }
 
-    def load() -> None:
-        try:
-            with open(_path, 'r') as file:
-                 _info = json.load(file)
-        except IOError:
-            _info = _getDefaultLoginInfo()
+    _path = r"../users/login.json"
+    _info = _getDefaultLoginInfo()
 
-    def save() -> None:
+    @classmethod
+    def load(cls) -> None:
         try:
-            with open(_path, 'w') as file:
-                json.dump(_info, file, indent = 4)
+            with open(cls._path, 'r') as file:
+                 cls._info = json.load(file)
+        except IOError:
+            cls._info = cls._getDefaultLoginInfo()
+
+    @classmethod
+    def save(cls) -> None:
+        try:
+            with open(cls._path, 'w') as file:
+                json.dump(cls._info, file, indent = 4)
         except FileNotFoundError:
-            file = open(_path, 'x')
+            file = open(cls._path, 'x')
             file.close()
             save()
+
+    @classmethod
+    def isEmpty(cls) -> bool:
+        return len(cls._info['users']) == 0
+
+    @classmethod
+    def createUser(cls, username: str, password: str) -> None:
+        cls._info['users'].append(username)
+        cls._info['encrypted-passwords'].append(password)   #this has to be encrypted before appending
+        save()
+
+    @classmethod
+    def deleteUser(cls, username: str) -> None:
+        index = cls._info['users'].index(username)
+        cls._info['users'].remove(index)
+        cls._info['encrypted-passwords'].remove(index)
+        save()
+
+    @classmethod
+    def validateUser(cls, username: str, password: str) -> bool:
+        index = cls._info['users'].index(username)
+        return cls._info['encrypted_passwords'][index] == password  #the password has to be encrypted before using
