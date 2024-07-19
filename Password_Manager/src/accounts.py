@@ -48,6 +48,14 @@ class LoginInfo:
         cls.save()
 
     @classmethod
-    def validateUser(cls, username: str, password: str) -> bool:
+    def doesUserExist(cls, username: str) -> bool:
+        return cls._info['users'].count(username) > 0
+
+    @classmethod
+    def _validateUser(cls, username: str, password: str) -> bool:
         index = cls._info['users'].index(username)
         return cls._info['encrypted_passwords'][index] == cls._generateHash(password)
+
+    @classmethod
+    def validateCredentials(cls, username: str, password: str) -> bool:
+        return cls.doesUserExist(username) and cls._validateUser(username, password)
