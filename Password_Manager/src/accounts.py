@@ -54,7 +54,7 @@ class LoginInfo:
     @classmethod
     def _validateUser(cls, username: str, password: str) -> bool:
         index = cls._info['users'].index(username)
-        return cls._info['encrypted_passwords'][index] == cls._generateHash(password)
+        return cls._info['encrypted-passwords'][index] == cls._generateHash(password)
 
     @classmethod
     def validateCredentials(cls, username: str, password: str) -> bool:

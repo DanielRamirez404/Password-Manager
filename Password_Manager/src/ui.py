@@ -1,19 +1,26 @@
 import tkinter as tk
 
-def addTitledTextbox(window, title: str):
-    frame = tk.Frame(master=window)
+def getTitledEntry(master, title: str):
+    frame = tk.Frame(master=master)
     label = tk.Label(master=frame, text=title, anchor='w')
     entry = tk.Entry(master=frame)
     label.pack(fill=tk.X)
     entry.pack(fill=tk.X)
     frame.pack(fill=tk.X, padx=5, pady=5)
-    
+    return entry
 
-def showLoginWindow() -> None:
+def addSimpleButton(master, text: str, onClick, *args):
+    button = tk.Button(master=master, text=text)
+    button.bind("<Button-1>", lambda event: onClick(*args))
+    button.pack(side=tk.LEFT, padx=5, pady=5)
+
+def showLoginWindow(onLogIn, onSignUp) -> None:
     root = tk.Tk()
     root.title('Login')
-    addTitledTextbox(root, "Username: ")
-    addTitledTextbox(root, "Password: ")
-    button = tk.Button(text="Log in")
-    button.pack(padx=5, pady=5)
+    userEntry = getTitledEntry(root, "Username: ")
+    passwordEntry = getTitledEntry(root, "Password: ")
+    buttonsFrame = tk.Frame(master=root)
+    addSimpleButton(buttonsFrame, "Log in", onLogIn, root, userEntry, passwordEntry)
+    addSimpleButton(buttonsFrame, "Sign up", onSignUp)
+    buttonsFrame.pack(padx=5, pady=5)
     root.mainloop()
