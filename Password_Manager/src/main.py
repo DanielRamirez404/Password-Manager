@@ -1,5 +1,5 @@
 from accounts import LoginInfo
-import ui
+from ui import *
 import sqlite3
 
 def loadDatabase():
@@ -11,6 +11,10 @@ def onLogIn(window, usernameEntry, passwordEntry) -> None:
     else:
         print("Try again!")
 
+def onSignUp(parent) -> None:
+    parent.destroy()
+    showSignUpWindow(onSave=lambda: print('save'), onBack=lambda: print('back'))
+
 def __main__() -> int:
 
     LoginInfo.load()
@@ -19,7 +23,7 @@ def __main__() -> int:
         #create user example
         LoginInfo.createUser('coolUser777', 'password123')
     else:
-        ui.showLoginWindow(onLogIn=onLogIn, onSignUp=lambda: print("clicked!"))
+        showLoginWindow(onLogIn=onLogIn, onSignUp=onSignUp)
         #connection = loadDatabase()
 
     return 0
