@@ -11,9 +11,22 @@ def onLogIn(window, usernameEntry, passwordEntry) -> None:
     else:
         print("Try again!")
 
+def onSaveNewUser(usernameEntry, passwordEntry, confirmPasswordEntry) -> None:
+    if LoginInfo.doesUserExist(usernameEntry.get()):
+        print('oh-oh, this user already exist!')
+    elif passwordEntry.get() != confirmPasswordEntry.get():
+        print('oh-oh, the passwords do not match!')
+    else:
+        LoginInfo.createUser(usernameEntry.get(), passwordEntry.get())
+        print('saved!')
+
 def onSignUp(parent) -> None:
     parent.destroy()
-    showSignUpWindow(onSave=lambda: print('save'), onBack=lambda: print('back'))
+    showSignUpWindow(onSave=onSaveNewUser, onBack=onBackToLogin)
+
+def onBackToLogin(currentWindow) -> None:
+    currentWindow.destroy()
+    showLoginWindow(onLogIn=onLogIn, onSignUp=onSignUp)
 
 def __main__() -> int:
 
