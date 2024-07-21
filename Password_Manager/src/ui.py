@@ -2,7 +2,7 @@ import tkinter as tk
 from ui_variables import *
 from ui_reusables import *
 
-def showLoginWindow(onLogIn, onSignUp) -> None:
+def showLoginWindow(onLogIn, onSignUp, onExit) -> None:
     root = tk.Tk()
     root.title('Login')
     userEntry = getTitledEntry(root, "Username: ")
@@ -12,7 +12,7 @@ def showLoginWindow(onLogIn, onSignUp) -> None:
     addSimpleButton(simpleButtonsFrame, "Log in", onLogIn, root, userEntry, passwordEntry)
     addSimpleButton(simpleButtonsFrame, "Sign up", onSignUp, root)
     simpleButtonsFrame.pack(padx=Padding.small.value)
-    addCenteredButton(buttonsFrame, "Exit", lambda: root.destroy())
+    addCenteredButton(buttonsFrame, "Exit", onExit, root)
     buttonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value)
     root.mainloop()
 
