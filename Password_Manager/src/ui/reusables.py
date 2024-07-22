@@ -1,5 +1,5 @@
 import tkinter as tk
-from ui_variables import *
+from ui.variables import *
 
 def getTitledEntry(master, title: str):
     frame = tk.Frame(master=master)

@@ -1,6 +1,6 @@
 import tkinter as tk
-from ui_variables import *
-from ui_reusables import *
+from ui.variables import *
+from ui.reusables import *
 
 def showLoginWindow(onLogIn, onSignUp, onExit) -> None:
     root = tk.Tk()
