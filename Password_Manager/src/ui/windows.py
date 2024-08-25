@@ -19,8 +19,6 @@ def showLoginWindow(onLogIn, onSignUp, onExit) -> None:
 def showSignUpWindow(onSave, onBack)-> None:
     root = tk.Tk()
     root.title('Sign Up')
-    label = tk.Label(master=root, text="Make sure to save your password,\nsince you won't be able to recover it,\nand that could lead to data loss")
-    label.pack(padx=Padding.small.value, pady=Padding.small.value)
     userEntry = getTitledEntry(root, "Username: ")
     passwordEntry = getTitledEntry(root, "Password: ")
     confirmPasswordEntry = getTitledEntry(root, "Confirm Passsword: ")

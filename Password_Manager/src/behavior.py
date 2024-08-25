@@ -18,13 +18,16 @@ def onSaveNewUser(usernameEntry, passwordEntry, confirmPasswordEntry) -> None:
         messagebox.showerror(title="Invalid User", message="Oh-oh, this user already exist!")
     elif passwordEntry.get() != confirmPasswordEntry.get():
         messagebox.showerror(title="Mismatched Passwords", message="Oh-oh, the passwords do not match!")
+    elif usernameEntry.get() == "" or usernameEntry.get() == "":
+        messagebox.showerror(title="Empty Entries", message="Youc can\'t leave any empty entries before saving your new user")
     else:
         LoginInfo.createUser(usernameEntry.get(), passwordEntry.get())
         messagebox.showinfo(title="Saved Successfully", message="Your data has been successfully registered")
 
 def onSignUp(parent) -> None:
     parent.destroy()
-    showSignUpWindow(onSave=onSaveNewUser, onBack=onBackToLogin)
+    messagebox.showinfo(title = "Warning", message="Make sure to save your password, since you won't be able to recover it, and that could lead to data loss")
+    showSignUpWindow(onSave=onSaveNewUser, onBack=onBackToLogin)  
 
 def onBackToLogin(currentWindow) -> None:
     currentWindow.destroy()
