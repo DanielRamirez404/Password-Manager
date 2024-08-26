@@ -1,10 +1,14 @@
 from ui.windows import *
 from accounts import LoginInfo
 from tkinter import messagebox
+from database import DatabaseConnection
 
 def onLogIn(window, usernameEntry, passwordEntry) -> None:
     if LoginInfo.validateCredentials(usernameEntry.get(), passwordEntry.get()):
         messagebox.showinfo(title="Login Successful", message="Welcome back! Thanks for trusting on us! :)")
+        test = DatabaseConnection()
+        test.load(usernameEntry.get(), passwordEntry.get())
+        window.destroy()
     else:
         messagebox.showerror(title="Invalid Credentials", message="Oh-oh, your credentials do not correspond to any existing user. If you please, try again.")
 
