@@ -27,3 +27,24 @@ def showSignUpWindow(onSave, onBack)-> None:
     addSimpleButton(buttonsFrame, "Back", onBack, root)
     buttonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value)
     root.mainloop()
+
+def showPasswordsWindow(connection, onUpdate, onNewPassword, onSearch, onBack) -> None:
+    root = tk.Tk()
+    root.title('Menu')
+
+    passwordsFrame = tk.Frame(master=root)
+
+    onUpdate(data, passwordsFrame)
+    
+    buttonsFrame = tk.Frame(master=root)
+
+    actionButtonsFrame = tk.Frame(master=buttonsFrame)
+
+    addSimpleButton(actionButtonsFrame, "New Password", onNewPassword)
+    addSimpleButton(actionButtonsFrame, "Search Password", onSearch)
+    actionButtonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value)
+    addCenteredButton(buttonsFrame, "Back", onBack, root)
+
+    passwordsFrame.pack(padx=Padding.small.value, pady=Padding.small.value)
+    buttonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value)
+    root.mainloop()
