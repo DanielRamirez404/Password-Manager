@@ -24,21 +24,24 @@ class DatabaseConnection:
         return self._cursor.execute(r"SELECT name FROM sqlite_master WHERE name='Passwords'").fetchone() is not None
 
     def _createTable(self) -> None:
-        self._cursor.execute("CREATE TABLE Passwords(key, password)")
+        self._cursor.execute("CREATE TABLE Passwords(identifier, password)")
 
-    def doesKeyExist(self, key) -> bool:
-        return self._cursor.execute(r"SELECT * FROM Passwords WHERE key='?'", key).fetchone() is not None
+    def doesIdentifierExist(self, identifier) -> bool:
+        return self._cursor.execute(r"SELECT * FROM Passwords WHERE identifier='?'", key).fetchone() is not None
 
-    def savePassword(self, key: str, password: str) -> None:
-        data = (key, self._fernet.encrypt(password.encode()))
+    def savePassword(self, identifier: str, password: str) -> None:
+        data = (identifier, self._fernet.encrypt(password.encode()))
         self._cursor.execute("INSERT INTO Passwords VALUES(?, ?)", data)
         self._connection.commit()
 
     def getSavedPasswords(self) -> list:
-        passwords = self._cursor.execute("SELECT * FROM Passwords").fetchall()
-        for key, password in passwords:
-            password = self._fernet.decrypt(password.encode())
-        return passwords
+        fetchedData = self._cursor.execute("SELECT * FROM Passwords").fetchall()
+        decryptedPasswords = []
+
+        for key, password in fetchedData:
+            decryptedPasswords.append((key, self._fernet.decrypt(password)))
+
+        return decryptedPasswords
 
     def updatePassword(self, key: str, password: str) -> None:
         data = (key, self._fernet.encrypt(password.encode()))
