@@ -40,8 +40,10 @@ def onBackToLogin(currentWindow) -> None:
     currentWindow.destroy()
     showLoginWindow(onLogIn=onLogIn, onSignUp=onSignUp, onExit=onExit)
 
-def onDeletePassword():
-    pass
+def onDeletePassword(connection: DatabaseConnection, identifier: str, frame: tk.Frame) -> None:
+    connection.deletePassword(identifier)
+    frame.pack_forget()
+    frame.destroy()
 
 def onEditPassword():
     pass

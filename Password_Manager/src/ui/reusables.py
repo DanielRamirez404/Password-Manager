@@ -20,13 +20,13 @@ def addCenteredButton(master, text: str, onClick, *args) -> None:
     button.bind("<Button-1>", lambda event: onClick(*args))
     button.pack(padx=Padding.small.value, pady=Padding.small.value)
 
-def addPasswordFrame(master, title: str, password: str, onEdit, onDelete, onView) -> None:
+def addPasswordFrame(master, connection, identifier: str, password: str, onEdit, onDelete, onView) -> None:
     frame = tk.Frame(master=master)
-    titleLabel = tk.Label(master=frame, text=title, anchor='w')
+    titleLabel = tk.Label(master=frame, text=identifier, anchor='w')
     passwordLabel = tk.Label(master=frame, text=password, anchor='w')
     titleLabel.pack(side=tk.LEFT, padx=Padding.small.value)
     passwordLabel.pack(side=tk.LEFT, padx=Padding.small.value)
     addSimpleButton(frame, 'edit', onEdit)
-    addSimpleButton(frame, 'erase', onDelete)
+    addSimpleButton(frame, 'erase', onDelete, connection, identifier, frame)
     addSimpleButton(frame, 'view', onView)
     frame.pack(padx=Padding.small.value, pady=Padding.small.value)

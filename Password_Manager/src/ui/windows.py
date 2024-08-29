@@ -35,7 +35,7 @@ def showPasswordsWindow(connection, onAddPassword, onSearch, onBack, onEditPassw
     data = connection.getSavedPasswords()
 
     for identifier, password in data:
-        addPasswordFrame(root, identifier, password, onEditPassword, onDeletePassword, onViewPassword)
+        addPasswordFrame(root, connection, identifier, password, onEditPassword, onDeletePassword, onViewPassword)
     
     buttonsFrame = tk.Frame(master=root)
 

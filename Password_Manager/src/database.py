@@ -39,11 +39,15 @@ class DatabaseConnection:
         decryptedPasswords = []
 
         for key, password in fetchedData:
-            decryptedPasswords.append((key, self._fernet.decrypt(password)))
-
+            decryptedPasswords.append((key, self._fernet.decrypt(password).decode()))
+        
         return decryptedPasswords
 
-    def updatePassword(self, key: str, password: str) -> None:
-        data = (key, self._fernet.encrypt(password.encode()))
+    def updatePassword(self, identifier: str, password: str) -> None:
+        data = (identifier, self._fernet.encrypt(password.encode()))
         self._cursor.execute(r"UPDATE Passwords SET key='?', password='?'", data)
+        self._connection.commit()
+
+    def deletePassword(self, identifier: str) -> None: 
+        self._cursor.execute(r"DELETE FROM Passwords WHERE identifier=?", (identifier,))
         self._connection.commit()
