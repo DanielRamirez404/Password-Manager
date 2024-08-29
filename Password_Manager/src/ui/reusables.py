@@ -10,12 +10,23 @@ def getTitledEntry(master, title: str):
     frame.pack(fill=tk.X, padx=Padding.small.value, pady=Padding.small.value)
     return entry
 
-def addSimpleButton(master, text: str, onClick, *args):
+def addSimpleButton(master, text: str, onClick, *args) -> None:
     button = tk.Button(master=master, text=text)
     button.bind("<Button-1>", lambda event: onClick(*args))
     button.pack(side=tk.LEFT, padx=Padding.small.value)
 
-def addCenteredButton(master, text: str, onClick, *args):
+def addCenteredButton(master, text: str, onClick, *args) -> None:
     button = tk.Button(master=master, text=text, width=Padding.medium.value)
     button.bind("<Button-1>", lambda event: onClick(*args))
     button.pack(padx=Padding.small.value, pady=Padding.small.value)
+
+def addPasswordFrame(master, title: str, password: str, onEdit, onDelete, onView) -> None:
+    frame = tk.Frame(master=master)
+    titleLabel = tk.Label(master=frame, text=title, anchor='w')
+    passwordLabel = tk.Label(master=frame, text=password, anchor='w')
+    titleLabel.pack(side=tk.LEFT, padx=Padding.small.value)
+    passwordLabel.pack(side=tk.LEFT, padx=Padding.small.value)
+    addSimpleButton(frame, 'edit', onEdit)
+    addSimpleButton(frame, 'erase', onDelete)
+    addSimpleButton(frame, 'view', onView)
+    frame.pack(padx=Padding.small.value, pady=Padding.small.value)
