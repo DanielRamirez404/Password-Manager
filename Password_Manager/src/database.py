@@ -27,7 +27,7 @@ class DatabaseConnection:
         self._cursor.execute("CREATE TABLE Passwords(identifier, password)")
 
     def doesIdentifierExist(self, identifier) -> bool:
-        return self._cursor.execute(r"SELECT * FROM Passwords WHERE identifier='?'", key).fetchone() is not None
+        return self._cursor.execute(r"SELECT * FROM Passwords WHERE identifier=?", identifier).fetchone() is not None
 
     def savePassword(self, identifier: str, password: str) -> None:
         data = (identifier, self._fernet.encrypt(password.encode()))
@@ -35,19 +35,19 @@ class DatabaseConnection:
         self._connection.commit()
 
     def getSavedPasswords(self) -> list:
-        fetchedData = self._cursor.execute("SELECT * FROM Passwords").fetchall()
+        fetchedData = self._cursor.execute("SELECT * FROM Passwords ORDER BY identifier").fetchall()
         decryptedPasswords = []
 
-        for key, password in fetchedData:
-            decryptedPasswords.append((key, self._fernet.decrypt(password).decode()))
+        for identifier, password in fetchedData:
+            decryptedPasswords.append((identifier, self._fernet.decrypt(password).decode()))
         
         return decryptedPasswords
 
     def updatePassword(self, identifier: str, password: str) -> None:
-        data = (identifier, self._fernet.encrypt(password.encode()))
-        self._cursor.execute(r"UPDATE Passwords SET key='?', password='?'", data)
+        data = (self._fernet.encrypt(password.encode()), identifier)
+        self._cursor.execute("UPDATE Passwords SET password=? WHERE identifier=?", data)
         self._connection.commit()
 
     def deletePassword(self, identifier: str) -> None: 
-        self._cursor.execute(r"DELETE FROM Passwords WHERE identifier=?", (identifier,))
+        self._cursor.execute("DELETE FROM Passwords WHERE identifier=?", (identifier,))
         self._connection.commit()
