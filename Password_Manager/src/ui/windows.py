@@ -41,7 +41,7 @@ def showPasswordsWindow(connection, onAddPassword, onSearch, onBack, onLoadPassw
     actionButtonsFrame = tk.Frame(master=root)
 
     addSimpleButton(actionButtonsFrame, "New Password", onAddPassword, connection, passwordsFrame)
-    addSimpleButton(actionButtonsFrame, "Search Password", onSearch)
+    addSimpleButton(actionButtonsFrame, "Search Password", onSearch, connection)
     actionButtonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value)
     addCenteredButton(buttonsFrame, "Back", onBack, root)
     

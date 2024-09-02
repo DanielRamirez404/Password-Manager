@@ -42,6 +42,10 @@ class DatabaseConnection:
             decryptedPasswords.append((identifier, self._fernet.decrypt(password).decode()))
         
         return decryptedPasswords
+    
+    def getPassword(self, identifier: str) -> tuple:
+        return next(password for password in self.getSavedPasswords() if password[0] == identifier)[1]
+
 
     def updatePassword(self, identifier: str, password: str) -> None:
         data = (self._fernet.encrypt(password.encode()), identifier)

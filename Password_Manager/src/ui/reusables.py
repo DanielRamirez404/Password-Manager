@@ -28,5 +28,5 @@ def addPasswordFrame(master, connection, identifier: str, password: str, onEdit,
     passwordLabel.pack(side=tk.LEFT, padx=Padding.small.value)
     addSimpleButton(frame, 'edit', onEdit)
     addSimpleButton(frame, 'erase', onDelete, connection, identifier, frame)
-    addSimpleButton(frame, 'view', onView)
+    addSimpleButton(frame, 'view', onView, titleLabel, passwordLabel)
     frame.pack(padx=Padding.small.value, pady=Padding.small.value)

@@ -53,15 +53,18 @@ def onBackToLogin(currentWindow) -> None:
     showLoginWindow(onLogIn=onLogIn, onSignUp=onSignUp, onExit=onExit)
 
 def onDeletePassword(connection: DatabaseConnection, identifier: str, frame: tk.Frame) -> None:
-    connection.deletePassword(identifier)
-    frame.pack_forget()
-    frame.destroy()
+    
+    if messagebox.askquestion(title="Delete?", message="Are you sure you want to delete the current password? This cannot be undone.") == 'yes':
+        connection.deletePassword(identifier)
+        frame.pack_forget()
+        frame.destroy()
+        messagebox.showinfo(title = "Done!", message = "Your password has been successfully erased!")
 
 def onEditPassword():
     pass
 
 def onAddPassword(connection: DatabaseConnection, passwordsFrame):
-    identifier = askstring(r'Identifier', "Enter the password's identifier")
+    identifier = askstring('Identifier', r"Enter the password's identifier")
 
     if identifier is None:
         return
@@ -78,11 +81,22 @@ def onAddPassword(connection: DatabaseConnection, passwordsFrame):
     messagebox.showinfo(title = "Done!", message = "Your password has been successfully saved!")
     onLoadPasswords(connection, passwordsFrame)
 
-def onViewPassword():
-    pass
+def onViewPassword(identifierLabel, passwordLabel):
+    showPassword('View', identifierLabel["text"], passwordLabel["text"])
 
-def onSearchPassword():
-    pass
+def onSearchPassword(connection: DatabaseConnection):
+    identifier = askstring('Search', r"Enter the identifier you want to look for")
+
+    if identifier is None:
+        return
+    if not connection.doesIdentifierExist(identifier):
+        messagebox.showerror(title="Error", message = "That identifier does not belong to any existing password")
+        return
+
+    showPassword('Search', identifier, connection.getPassword(identifier))
+
+def showPassword(title: str, identifier: str, password: str) -> None:
+    messagebox.showinfo(title = title, message = f"Title: {identifier}\nPassword: {password}")
 
 '''
 label for future use: label = tk.Label(master=passwordFrame, text="Oh-Oh!\nNo saved passwords\nfor this profile!", anchor='w')
