@@ -1,6 +1,7 @@
 from ui.windows import *
 from accounts import LoginInfo
 from tkinter import messagebox
+from tkinter.simpledialog import askstring
 import tkinter as tk
 from database import DatabaseConnection
 
@@ -11,7 +12,7 @@ def onLogIn(window, usernameEntry, passwordEntry) -> None:
         password = passwordEntry.get()
         window.destroy()
         connection = DatabaseConnection(username, password)
-        showPasswordsWindow(connection, onAddPassword, onSearchPassword, onBackToLogin, onEditPassword, onDeletePassword, onViewPassword)
+        showPasswordsWindow(connection, onAddPassword, onSearchPassword, onBackToLogin, onLoadPasswords)
     else:
         messagebox.showerror(title="Invalid Credentials", message="Oh-oh, your credentials do not correspond to any existing user. If you please, try again.")
 
@@ -31,6 +32,17 @@ def onSaveNewUser(usernameEntry, passwordEntry, confirmPasswordEntry) -> None:
         LoginInfo.createUser(usernameEntry.get(), passwordEntry.get())
         messagebox.showinfo(title="Saved Successfully", message="Your data has been successfully registered")
 
+def onLoadPasswords(connection: DatabaseConnection, frame) -> None:
+
+    for widget in frame.winfo_children():
+        widget.destroy()
+
+    data = connection.getSavedPasswords()
+
+    for identifier, password in data:
+        addPasswordFrame(frame, connection, identifier, password, onEditPassword, onDeletePassword, onViewPassword)
+
+
 def onSignUp(parent) -> None:
     parent.destroy()
     messagebox.showinfo(title = "Warning", message="Make sure to save your password, since you won't be able to recover it, and that could lead to data loss")
@@ -48,8 +60,23 @@ def onDeletePassword(connection: DatabaseConnection, identifier: str, frame: tk.
 def onEditPassword():
     pass
 
-def onAddPassword():
-    pass
+def onAddPassword(connection: DatabaseConnection, passwordsFrame):
+    identifier = askstring(r'Identifier', "Enter the password's identifier")
+
+    if identifier is None:
+        return
+    if connection.doesIdentifierExist(identifier):
+        messagebox.showerror(title="Error", message = "You cannot create a new entry with an existing identifier")
+        return
+
+    password = askstring('Password', "Enter the password")
+
+    if password is None:
+        return
+
+    connection.savePassword(identifier, password)
+    messagebox.showinfo(title = "Done!", message = "Your password has been successfully saved!")
+    onLoadPasswords(connection, passwordsFrame)
 
 def onViewPassword():
     pass

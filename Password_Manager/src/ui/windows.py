@@ -28,20 +28,19 @@ def showSignUpWindow(onSave, onBack)-> None:
     buttonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value)
     root.mainloop()
 
-def showPasswordsWindow(connection, onAddPassword, onSearch, onBack, onEditPassword, onDeletePassword, onViewPassword) -> None:
+def showPasswordsWindow(connection, onAddPassword, onSearch, onBack, onLoadPasswords) -> None:
     root = tk.Tk()
-    root.title('Menu')
+    root.title('Passwords')
 
-    data = connection.getSavedPasswords()
+    passwordsFrame = tk.Frame(master=root)
+    onLoadPasswords(connection, passwordsFrame)
 
-    for identifier, password in data:
-        addPasswordFrame(root, connection, identifier, password, onEditPassword, onDeletePassword, onViewPassword)
-    
+    passwordsFrame.pack(padx=Padding.small.value, pady=Padding.small.value)
+
     buttonsFrame = tk.Frame(master=root)
+    actionButtonsFrame = tk.Frame(master=root)
 
-    actionButtonsFrame = tk.Frame(master=buttonsFrame)
-
-    addSimpleButton(actionButtonsFrame, "New Password", onAddPassword)
+    addSimpleButton(actionButtonsFrame, "New Password", onAddPassword, connection, passwordsFrame)
     addSimpleButton(actionButtonsFrame, "Search Password", onSearch)
     actionButtonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value)
     addCenteredButton(buttonsFrame, "Back", onBack, root)
