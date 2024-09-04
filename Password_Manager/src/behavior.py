@@ -60,8 +60,17 @@ def onDeletePassword(connection: DatabaseConnection, identifier: str, frame: tk.
         frame.destroy()
         messagebox.showinfo(title = "Done!", message = "Your password has been successfully erased!")
 
-def onEditPassword():
-    pass
+def onEditPassword(connection: DatabaseConnection, identifierLabel, passwordLabel):
+    password = askstring('Edit Password', "Add the corresponding password: ")
+    
+    if password is None:
+        return
+
+    passwordLabel["text"] = password
+
+    connection.updatePassword(identifier, password)
+
+    messagebox.showinfo(title = "Done!", message = "Your password has been successfully updated")
 
 def onAddPassword(connection: DatabaseConnection, passwordsFrame):
     identifier = askstring('Identifier', r"Enter the password's identifier")
