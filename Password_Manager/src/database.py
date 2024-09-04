@@ -26,8 +26,8 @@ class DatabaseConnection:
     def _createTable(self) -> None:
         self._cursor.execute("CREATE TABLE Passwords(identifier, password)")
 
-    def doesIdentifierExist(self, identifier) -> bool:
-        return self._cursor.execute(r"SELECT * FROM Passwords WHERE identifier=?", identifier).fetchone() is not None
+    def doesIdentifierExist(self, identifier: str) -> bool:
+        return self._cursor.execute(r"SELECT * FROM Passwords WHERE identifier=?", (identifier,)).fetchone() is not None
 
     def savePassword(self, identifier: str, password: str) -> None:
         data = (identifier, self._fernet.encrypt(password.encode()))

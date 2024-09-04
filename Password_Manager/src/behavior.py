@@ -74,7 +74,7 @@ def onEditPassword(connection: DatabaseConnection, identifierLabel, passwordLabe
 
 def onAddPassword(connection: DatabaseConnection, passwordsFrame):
     identifier = askstring('Identifier', r"Enter the password's identifier")
-
+    
     if identifier is None:
         return
     if connection.doesIdentifierExist(identifier):
