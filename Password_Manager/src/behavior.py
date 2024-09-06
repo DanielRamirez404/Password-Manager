@@ -36,9 +36,14 @@ def onLoadPasswords(connection: DatabaseConnection, frame) -> None:
 
     for widget in frame.winfo_children():
         widget.destroy()
-
+    
     data = connection.getSavedPasswords()
 
+    if data == []:
+        label = tk.Label(master=frame, text="Oh-Oh!\nNo saved passwords\nfor this profile!", anchor='w')
+        label.pack(fill=tk.X)
+        return
+    
     for identifier, password in data:
         addPasswordFrame(frame, connection, identifier, password, onEditPassword, onDeletePassword, onViewPassword)
 
@@ -108,5 +113,4 @@ def showPassword(title: str, identifier: str, password: str) -> None:
     messagebox.showinfo(title = title, message = f"Title: {identifier}\nPassword: {password}")
 
 '''
-label for future use: label = tk.Label(master=passwordFrame, text="Oh-Oh!\nNo saved passwords\nfor this profile!", anchor='w')
 '''
