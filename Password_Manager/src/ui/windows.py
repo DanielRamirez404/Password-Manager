@@ -28,26 +28,28 @@ def showSignUpWindow(onSave, onBack)-> None:
     buttonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value)
     root.mainloop()
 
-def showPasswordsWindow(connection, onAddPassword, onSearch, onBack, onLoadPasswords) -> None:
+def showPasswordsWindow(connection, onLoadPasswords) -> None:
     width, height = 400, 400
     scrollableWindow = getScrollableWindow(width=width, height=height, title='Passwords')
     root = scrollableWindow['root']
-    innerFrame = scrollableWindow['innerFrame']
     canvasFrame = scrollableWindow['canvasFrame']
 
-    passwordsFrame = tk.Frame(master=innerFrame)
-    onLoadPasswords(connection, passwordsFrame)
-    passwordsFrame.pack(padx=Padding.small.value, pady=Padding.small.value, anchor=tk.CENTER, fill=tk.BOTH)
+    onLoadPasswords(connection, root, canvasFrame, height)
+
+    root.mainloop()
+
+def addPasswordsWindowInnerFrame(connection, root, canvasFrame, getPasswordsFrame, height, onAddPassword, onSearch, onBack):
+    innerFrame = tk.Frame(master=canvasFrame)
+    innerFrame.pack(fill=None, expand=True)
+
+    passwordsFrame = getPasswordsFrame(connection, innerFrame, canvasFrame, height)
+    passwordsFrame.pack(padx=Padding.small.value, pady=Padding.small.value, anchor=tk.N, fill=tk.BOTH)
 
     actionButtonsFrame = tk.Frame(master=innerFrame)
-    addSimpleButton(actionButtonsFrame, "New Password", onAddPassword, connection, passwordsFrame)
+    addSimpleButton(actionButtonsFrame, "New Password", onAddPassword, connection, root, passwordsFrame, canvasFrame, height)
     addSimpleButton(actionButtonsFrame, "Search Password", onSearch, connection)
     actionButtonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value, anchor=tk.CENTER, fill=tk.BOTH)
 
     centeredButton = tk.Frame(master=innerFrame)
     addCenteredButton(centeredButton, "Back", onBack, root)
     centeredButton.pack(padx=Padding.small.value, pady=Padding.small.value, anchor=tk.CENTER, fill=tk.BOTH)
-
-    canvasFrame.configure(height=1000)
-
-    root.mainloop()

@@ -40,13 +40,12 @@ def getScrollableWindow(width: int, height: int, title: str) -> dict:
     windowFrame = tk.Frame(master=root)
     windowFrame.pack(fill=tk.BOTH, expand=True)
 
-    canvas = tk.Canvas(master=windowFrame, width=width-15)
-    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=False)
+    canvas = tk.Canvas(master=windowFrame, height=10000000, width=width-15)
+    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
     scrollbar = tk.Scrollbar(windowFrame, orient=tk.VERTICAL, command=canvas.yview)
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-    canvas.configure(bg='blue')
     canvas.configure(yscrollcommand=scrollbar.set)
     canvas.bind('<Configure>', lambda event: canvas.configure(scrollregion=canvas.bbox("all")))
 
@@ -54,8 +53,4 @@ def getScrollableWindow(width: int, height: int, title: str) -> dict:
     canvasFrame.pack_propagate(False)
     canvas.create_window((0, 0), window=canvasFrame, anchor=tk.N)
 
-    innerFrame = tk.Frame(master=canvasFrame)
-    innerFrame.pack(anchor=tk.N)
-
-    return {'root': root, 'canvasFrame': canvasFrame, 'innerFrame': innerFrame}
-
+    return {'root': root, 'canvasFrame': canvasFrame}

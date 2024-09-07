@@ -12,7 +12,7 @@ def onLogIn(window, usernameEntry, passwordEntry) -> None:
         password = passwordEntry.get()
         window.destroy()
         connection = DatabaseConnection(username, password)
-        showPasswordsWindow(connection, onAddPassword, onSearchPassword, onBackToLogin, onLoadPasswords)
+        showPasswordsWindow(connection, onLoadPasswords)
     else:
         messagebox.showerror(title="Invalid Credentials", message="Oh-oh, your credentials do not correspond to any existing user. If you please, try again.")
 
@@ -32,21 +32,38 @@ def onSaveNewUser(usernameEntry, passwordEntry, confirmPasswordEntry) -> None:
         LoginInfo.createUser(usernameEntry.get(), passwordEntry.get())
         messagebox.showinfo(title="Saved Successfully", message="Your data has been successfully registered")
 
-def onLoadPasswords(connection: DatabaseConnection, frame) -> None:
-
-    for widget in frame.winfo_children():
-        widget.destroy()
+def getPasswordsFrame(connection: DatabaseConnection, parent, canvasFrame, height):
+    frame = tk.Frame(master=parent)
     
     data = connection.getSavedPasswords()
-
-    if data == []:
-        label = tk.Label(master=frame, text="Oh-Oh!\nNo saved passwords\nfor this profile!", anchor='w')
-        label.pack(fill=tk.X)
-        return
     
-    for identifier, password in data:
-        addPasswordFrame(frame, connection, identifier, password, onEditPassword, onDeletePassword, onViewPassword)
+    if data == []:
 
+        label = tk.Label(master=frame, text="\n\n\n\nOh-Oh!\nNo saved passwords\nfor this profile!\n\n\n\n", anchor='n')
+        label.pack(fill=tk.X)
+
+    else:
+
+        for identifier, password in data:
+            addPasswordFrame(frame, connection, identifier, password, onEditPassword, onDeletePassword, onViewPassword)
+
+        heightPerPassword = 60
+        passwordsTilFullScreen = 6
+        passwordsCount = len(data)
+
+        if passwordsCount > passwordsTilFullScreen:
+            extraPasswords = passwordsCount - passwordsTilFullScreen
+            extraHeight = extraPasswords * heightPerPassword
+            canvasFrame.configure(height=height + extraHeight)
+
+    return frame
+
+def onLoadPasswords(connection: DatabaseConnection, root, canvasFrame, canvasHeight) -> None:
+
+    for widget in canvasFrame.winfo_children():
+        widget.destroy()
+    
+    addPasswordsWindowInnerFrame(connection, root, canvasFrame, getPasswordsFrame, canvasHeight, onAddPassword, onSearchPassword, onBackToLogin)
 
 def onSignUp(parent) -> None:
     parent.destroy()
@@ -77,7 +94,7 @@ def onEditPassword(connection: DatabaseConnection, identifierLabel, passwordLabe
 
     messagebox.showinfo(title = "Done!", message = "Your password has been successfully updated")
 
-def onAddPassword(connection: DatabaseConnection, passwordsFrame):
+def onAddPassword(connection: DatabaseConnection, root, passwordsFrame, canvasFrame, canvasHeight):
     identifier = askstring('Identifier', r"Enter the password's identifier")
     
     if identifier is None:
@@ -93,7 +110,7 @@ def onAddPassword(connection: DatabaseConnection, passwordsFrame):
 
     connection.savePassword(identifier, password)
     messagebox.showinfo(title = "Done!", message = "Your password has been successfully saved!")
-    onLoadPasswords(connection, passwordsFrame)
+    onLoadPasswords(connection, root, canvasFrame, canvasHeight)
 
 def onViewPassword(identifierLabel, passwordLabel):
     showPassword('View', identifierLabel["text"], passwordLabel["text"])
@@ -111,6 +128,3 @@ def onSearchPassword(connection: DatabaseConnection):
 
 def showPassword(title: str, identifier: str, password: str) -> None:
     messagebox.showinfo(title = title, message = f"Title: {identifier}\nPassword: {password}")
-
-'''
-'''
