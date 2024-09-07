@@ -29,28 +29,11 @@ def showSignUpWindow(onSave, onBack)-> None:
     root.mainloop()
 
 def showPasswordsWindow(connection, onAddPassword, onSearch, onBack, onLoadPasswords) -> None:
-    root = tk.Tk()
-    root.title('Passwords')
-    root.geometry('400x300')
-
-    frameContainer = tk.Frame(master=root)
-    frameContainer.pack(padx=Padding.small.value, pady=Padding.small.value, fill=tk.BOTH, expand=True)
-
-    canvasContainer = tk.Canvas(master=frameContainer)
-    canvasContainer.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-    scrollbar = tk.Scrollbar(frameContainer, orient=tk.VERTICAL, command=canvasContainer.yview)
-    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-    canvasContainer.configure(yscrollcommand=scrollbar.set)
-    canvasContainer.bind('<Configure>', lambda event: canvasContainer.configure(scrollregion=canvasContainer.bbox("all")))
-
-    outerFrame = tk.Frame(master=canvasContainer '''bg="black"''', height=300, width=300)
-    outerFrame.pack_propagate(False)
-    canvasContainer.create_window((0, 0), window=outerFrame, anchor=tk.N)
-
-    innerFrame = tk.Frame(master=outerFrame)
-    innerFrame.pack(anchor=tk.N)
+    width, height = 400, 400
+    scrollableWindow = getScrollableWindow(width=width, height=height, title='Passwords')
+    root = scrollableWindow['root']
+    innerFrame = scrollableWindow['innerFrame']
+    canvasFrame = scrollableWindow['canvasFrame']
 
     passwordsFrame = tk.Frame(master=innerFrame)
     onLoadPasswords(connection, passwordsFrame)
@@ -65,7 +48,6 @@ def showPasswordsWindow(connection, onAddPassword, onSearch, onBack, onLoadPassw
     addCenteredButton(centeredButton, "Back", onBack, root)
     centeredButton.pack(padx=Padding.small.value, pady=Padding.small.value, anchor=tk.CENTER, fill=tk.BOTH)
 
-
-    #outerFrame.configure(height=1000)
+    canvasFrame.configure(height=1000)
 
     root.mainloop()
