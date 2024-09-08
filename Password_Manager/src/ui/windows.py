@@ -28,28 +28,33 @@ def showSignUpWindow(onSave, onBack)-> None:
     buttonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value)
     root.mainloop()
 
-def showPasswordsWindow(connection, onLoadPasswords) -> None:
+def showPasswordsWindow(connection, onUpdatePasswordsUi) -> None:
     width, height = 400, 400
     scrollableWindow = getScrollableWindow(width=width, height=height, title='Passwords')
     root = scrollableWindow['root']
-    canvasFrame = scrollableWindow['canvasFrame']
+    canvas = scrollableWindow['canvas']
+    scrollbar = scrollableWindow['scrollbar']
 
-    onLoadPasswords(connection, root, canvasFrame, height)
+    onUpdatePasswordsUi(connection, root, canvas, scrollbar, width)
 
     root.mainloop()
 
-def addPasswordsWindowInnerFrame(connection, root, canvasFrame, getPasswordsFrame, height, onAddPassword, onSearch, onBack):
-    innerFrame = tk.Frame(master=canvasFrame)
-    innerFrame.pack(fill=None, expand=True)
+def addPasswordsWindowInnerFrame(connection, root, canvas, scrollbar, getPasswordsFrame, width, onAddPassword, onSearch, onBack):
+    canvasFrame = tk.Frame(master=canvas)
+    canvasFrame.bind('<Configure>', lambda event: canvas.configure(scrollregion=canvas.bbox("all")))
+    canvas.create_window((0, 0), window=canvasFrame, anchor=tk.NW)
 
-    passwordsFrame = getPasswordsFrame(connection, innerFrame, canvasFrame, height)
-    passwordsFrame.pack(padx=Padding.small.value, pady=Padding.small.value, anchor=tk.N, fill=tk.BOTH)
+    passwordsFrame = getPasswordsFrame(connection, canvasFrame)
+    passwordsFrame.pack(padx=Padding.small.value, pady=Padding.small.value, side=tk.TOP)
 
-    actionButtonsFrame = tk.Frame(master=innerFrame)
-    addSimpleButton(actionButtonsFrame, "New Password", onAddPassword, connection, root, passwordsFrame, canvasFrame, height)
+    actionButtonsFrame = tk.Frame(master=canvasFrame)
+    addSimpleButton(actionButtonsFrame, "New Password", onAddPassword, connection, root, passwordsFrame, canvas, scrollbar, width)
     addSimpleButton(actionButtonsFrame, "Search Password", onSearch, connection)
-    actionButtonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value, anchor=tk.CENTER, fill=tk.BOTH)
+    actionButtonsFrame.pack(padx=Padding.small.value, pady=Padding.small.value, side=tk.TOP)
 
-    centeredButton = tk.Frame(master=innerFrame)
+    centeredButton = tk.Frame(master=canvasFrame)
     addCenteredButton(centeredButton, "Back", onBack, root)
-    centeredButton.pack(padx=Padding.small.value, pady=Padding.small.value, anchor=tk.CENTER, fill=tk.BOTH)
+    centeredButton.pack(padx=Padding.small.value, pady=Padding.small.value, side=tk.TOP)
+
+    fullWidthFrame = tk.Frame(master=canvasFrame, width=width-15, height=1)
+    fullWidthFrame.pack(side=tk.TOP, fill=tk.X)
